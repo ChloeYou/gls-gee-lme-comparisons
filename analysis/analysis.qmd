@@ -1,0 +1,386 @@
+---
+title: "Compare GEE, GLS, LME Packages"
+author: "Chloe You"
+format: html
+document:
+  outline:
+    show: true
+output:
+  quarto::quarto_document:
+    theme: bookdown::quarto_bs4_sidebar
+---
+
+## Background
+
+Generalized least squares (GLS), generalized estimating equations (GEE), and linear mixed effects (LME) models are commonly used methods for estimating associations in clustered or correlated data to make unbiased statistical inferences. Fixed effects are population parameters that are constant across individuals, while random effects are individual-specific parameters that vary randomly across units and are modeled as random variables to account for residual heterogeneity not explained by fixed effects. LME models allow for both fixed and random effects, while GEE models allow only for fixed effects. In the case of linear models, the GLS estimator of the coefficients can be considered a special case of GEE (Fitzmaurice et al., 2012).
+
+In both methods, we assume that the errors are correlated and that the covariance structure can be modeled using some set of unknown parameters. Both methods estimate these unknown parameters and use them to improve the estimation of the fixed effects. However, the difference lies in how they handle the random effects.
+
+In GLS/GEE, we assume that the errors are correlated, but we do not explicitly model any random effects. Instead, we estimate the covariance matrix of the errors and use it to calculate weights for each observation. These weights are then used to estimate the fixed effects of the model.
+
+In LME, we model both fixed and random effects. The fixed effects are similar to those in GLS, but the random effects capture the between-subject variation that is not explained by the fixed effects. The random effects are assumed to be normally distributed with mean zero and a covariance matrix that is also a function of some set of unknown parameters. In LME, the covariance matrix of the errors is a combination of the covariance matrix of the random effects and the residual covariance matrix.
+
+There are several software packages that can fit GLS, GEE, and LME models, including SAS, R, WinBUGS, and SPSS. R is the most popular software for these models because it is open-source and has a vast repository of packages. For example, the \`geepack\` package is popular for fitting GEEs and allows for a variety of correlation structures and link functions. Other commonly used packages for fitting GEEs include \`gee\` . Popular R packages for fitting GLS models include \`gee\`, \`nlme\`, and \`lme4\`. Some packages support fitting more than one of the three approaches and are listed multiple times. Common packages for fitting mixed-effect models include \`lme4\` and \`nlme\` . There are also packages that apply mixed-effects models in a Bayesian framework, such as \`brms\`.
+
+## Objective
+
+Although R is popular for these models, the implementation of the functions varies across packages and the interpretation of the results also varies based on the model and package used. This project aims to compare popular GLS, GEE, and LME packages in R when applied to simulated data. The goal is to recover the true coefficients and error terms and to model the heterogeneity captured in the different models. The secondary goal is to see the effect of sample size on recovering the true coefficient. The project should help to gain a better understanding of the different models and packages in R.
+
+## Data Generation Process
+
+There will be 2 simulation settings. For the first simulation, we will fit a GLS on the CD4 data and extract the coefficients to generate data with n = 10, 50, 100. We will then try to fit GLS, GEE, and LME models from varying packages to get the coefficients and error terms.
+
+The first model we fit on the log CD4 data is a GLS. We assume a compound symmetry structure corresponding to a constant correlation. The covariance matrix is defined as:
+
+$$
+\boldsymbol{\Sigma} = \sigma^2 (\rho \boldsymbol{J} + (1-\rho)\boldsymbol{I})
+$$
+
+where $\sigma^2$ is the variance of the errors, $\rho$ is the correlation coefficient between any two measurements taken at the same time for the same individual, $\boldsymbol{J}$ is a matrix of ones, $\boldsymbol{I}$ is an identity matrix. This means that the error terms for any two individuals at the same time point are equally correlated, and the correlation is constant across all time points.
+
+Substituting this into the GLS model, we get:
+
+$$
+Y_{ij} = \beta_{0} + \beta_1 Time_{ij} + \epsilon_{ij}, 
+\boldsymbol{\epsilon} \sim N(0,\Sigma)
+$$ In this model, $CD4_{ij}$ represents the CD4 count for the $i$th individual at time $j$ , and $Time_{ij}$ represents the time (in weeks) for the $i$th individual at time $j$. $\boldsymbol{\epsilon}$ is a vector of errors that follows a multivariate normal distribution with mean zero and covariance matrix $\boldsymbol{\Sigma}$.
+
+The second simulation will use coefficients estimated via a random intercept linear mixed effect model. Similarly, we will generate data with sample sizes n = 10, 50, 100, and fit GLS, GEE, LME models to recover the coefficients.
+
+The model we fit follows the below specification:
+
+$$
+CD4_{ij} = \beta_{0i} + \beta_1 Time_{ij} + \epsilon_{ij}
+$$ where $\beta_{0i}$ represents the random intercept for the $i$th individual and $\beta_1$ represents the fixed effect of time. $\epsilon_{ij}$ represents the residual error for the $i$th individual at time $j$, assumed to be normally distributed with mean 0 and constant variance $\sigma^2$. We assume that $\beta_{0i} \sim N(0, \tau^2)$, and that the random intercepts for different individuals are independent of each other.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(here)
+library(tidyverse)
+library(dplyr)
+cd4 = read.table("cd4.txt",header=TRUE, sep="")
+
+cd4$Gender <- as.factor(cd4$Gender)
+cd4$Treatment <- as.factor(cd4$Treatment)
+cd4 <- cd4 %>% filter(log_CD4 > 0)
+library(lme4)
+library("gridExtra")
+library(geepack)
+library(nlme)
+library(gee)
+library(broom)
+library(broom.mixed)
+library(MASS)
+```
+
+```{r data-glimpse}
+glimpse(cd4)
+colnames(cd4)
+n_distinct(cd4$ID) 
+```
+
+Now we generate the first set of data based on GLS:
+
+```{r data-fit-gls}
+gls_model <- gls(log_CD4 ~ Week, data = cd4, 
+                       correlation = corCompSymm(form = ~ 1 | ID))
+gls_summary <- summary(gls_model)
+gls_summary
+```
+
+We extract the parameters from the model fit.
+
+-   $\hat{\rho}$ =0.66
+
+-   $\hat{\sigma}$ = 0.938
+
+-   $\beta_0$ = 3.06
+
+-   $\beta_1$= -0.008
+
+    ```{r data-generate-gls}
+    library(nlme)
+
+    # Set seed for reproducibility
+    set.seed(123)
+
+    # Specify number of individuals and number of time points
+    n_values <- c(10, 50, 100)
+    t <- 3
+
+    # Create empty data frames to store simulated data
+    df_list <- vector("list", length(n_values))
+    names(df_list) <- paste0("df_", n_values)
+    for(i in seq_along(df_list)) {
+      df_list[[i]] <- data.frame(ID = rep(1:n_values[i], each = t), 
+                                 Week = rep(1:t, n_values[i]), 
+                                 log_CD4 = NA)
+    }
+
+    # Set correlation parameter
+    rho <- 0.6600312 
+
+    # Set residual standard deviation
+    sigma <- 0.9386793 
+
+    # Loop through each value of n and generate simulated data
+    for(j in seq_along(df_list)) {
+      n <- n_values[j]
+      
+      # Generate intercepts for each individual
+      intercepts <- rnorm(n, mean = gls_summary$coefficients[1], 
+                          sd = gls_summary$tTable[1,2])
+      
+      # Generate time coefficients for each individual
+      time_coefs <- rnorm(n, mean = gls_summary$coefficients[2], 
+                          sd = gls_summary$tTable[2,2])
+      
+      cov_mat <- matrix(rho*sigma^2, nrow = t, ncol = t)
+      diag(cov_mat) <- sigma^2
+
+    # Generate random errors
+      errors <- mvrnorm(n = n*t, mu = rep(0, t), Sigma = cov_mat) 
+
+      
+    for(i in 1:n) {
+      # Generate log CD4 counts for this individual at each time point
+      for(k in 1:t) {
+        log_CD4 <- intercepts[i] + time_coefs[i] * k + errors[(i-1)*t+k]
+        df_list[[j]]$log_CD4[df_list[[j]]$ID == i & df_list[[j]]$Week == k] <- log_CD4
+      }
+    }
+      
+      # Convert log CD4 counts to actual CD4 counts
+      df_list[[j]]$CD4 <- exp(df_list[[j]]$log_CD4)
+    }
+
+    ```
+
+    We now move on to generating the second set of data based on the linear mixed effect model. First we fit the CD4 data and get estimated parameters:
+
+    ```{r dat-fit-lme}
+    lme_model <- nlme::lme(log_CD4 ~ Week, random = ~ 1 | ID, data = cd4)
+    lme_summary <- summary(lme_model)
+    lme_summary
+    ```
+
+    We extract the parameters from the model fit.
+
+-   $\beta_{0i} = \beta_0 + b_i$ and $b_i \sim \text{N}(0,\tau^2)$. From the model output, we gather that $\hat{\beta_0}= 3.0628143$ and $\hat{\tau} =0.7626047$.
+
+-   $\hat{\beta_1}= -0.008$
+
+-   $\hat{\sigma} =0.547$
+
+```{r data-generate-lme}
+
+# Specify number of individuals and number of time points
+n_list <- c(10, 50, 100)
+t <- 3
+
+# Create an empty list to store simulated data frames
+sim_data <- list()
+
+# Loop through different sample sizes
+for (i in seq_along(n_list)) {
+  
+  # Get the current sample size
+  n <- n_list[i]
+  
+  
+  # Create empty data frame to store simulated data
+  df <- data.frame(ID = rep(1:n, each = t), Week = rep(1:t, n), log_CD4 = NA)
+  
+  # Generate time coefficients for each individual
+  time_coefs <- rnorm(n, mean = lme_summary$tTable[2,1], 
+                      sd = gls_summary$tTable[2,2])
+  
+  # Loop through each individual and generate simulated data
+  for(j in 1:n) {
+    
+    # Generate random intercept for this individual
+    random_intercept <- rnorm(1, mean = 0, sd = 0.7626047) # tau
+    for(k in 1:t){
+    # Generate log CD4 counts for this individual at the given time point
+    log_CD4 <- lme_summary$tTable[1,1] + 
+              random_intercept + 
+              time_coefs[j] * k +
+              rnorm(1, mean = 0, sd = 0.5473143) # sigma
+    
+    # Store simulated data in data frame
+    df$log_CD4[df$ID == j & df$Week == k] <- log_CD4
+    }
+  }
+  
+  # Convert log CD4 counts to actual CD4 counts
+  df$CD4 <- exp(df$log_CD4)
+  
+  # Add the simulated data frame to the list
+  sim_data[[i]] <- df
+}
+```
+
+So far, we have generated 6 dataframes stored in 2 lists, `df_list` and `sim_data` .
+
+## Simulation 1: Fitting Models on GLS-generated Data
+
+Let's try using different packages to fit the data generated via the GLS model. Namely, the packages listed below:
+
+```{r}
+#| eval: false
+library(lme4)
+library(nlme)
+library(geepack)
+library(glmmTMB)
+```
+
+We fit a model with log CD4 counts as outcome, and include an intercept and `Week` as a predictor.
+
+```{r}
+#| warning: false
+library(broom)
+# Function to fit models and extract coefficients
+extract_coef <- function(df) {
+  # gls using nlme package
+  gls <- gls(log_CD4 ~ Week, data = df, 
+             correlation = corCompSymm(form = ~ 1 | ID))
+  
+  # LME using nlme package
+  lme_nlme <- nlme::lme(log_CD4 ~ Week, random = ~1|ID, data = df)
+
+  # LME using lme4 package
+  lme_lme4 <- lme4::lmer(log_CD4 ~ Week + (1|ID), data = df)
+  
+  # GEE using geepack package
+  gee_geepack <- geepack::geeglm(log_CD4 ~ Week, id = ID, data = df)
+  
+  # generalized linear mixed model using glmmTMB package
+  glmm_glmmTMB <- glmmTMB::glmmTMB(log_CD4 ~ Week + (1|ID), data = df)
+  
+  coef_table <- tibble(
+    Model = c("GLS (nlme)", "LME (nlme)", "LME (lme4)", "GEE (geepack)", "GLMM (glmmTMB)"),
+    Fixed_Effect_intercept = c(tidy(gls)$estimate[1],
+                               tidy(lme_nlme)$estimate[1],
+                               tidy(lme_lme4)$estimate[1],
+                               tidy(gee_geepack)$estimate[1],
+                               tidy(glmm_glmmTMB)$estimate[1]),
+    Fixed_Effect_Week = c(tidy(gls)$estimate[2],
+                           tidy(lme_nlme)$estimate[2],
+                           tidy(lme_lme4)$estimate[2],
+                           tidy(gee_geepack)$estimate[2],
+                           tidy(glmm_glmmTMB)$estimate[2]),
+    Random_Effect_sd = c(NA,
+                              (tidy(lme_nlme)$estimate[3]),
+                              (tidy(lme_lme4)$estimate[3]),
+                               NA,
+                               (tidy(glmm_glmmTMB)$estimate[3])),
+    Error_Term_sd = c(gls$sigma,
+                              (tidy(lme_nlme)$estimate[4]),
+                              (tidy(lme_lme4)$estimate[4]),
+                              sqrt(summary(gee_geepack)$dispersion[1]),
+                              (tidy(glmm_glmmTMB)$estimate[4]))
+  )
+  
+  return(coef_table)
+}
+
+coef_list_tidy <- lapply(df_list, extract_coef)
+
+# Combine tables into one
+combined_table <- dplyr::bind_rows(coef_list_tidy)
+
+# Round numbers to 3 decimal places
+combined_table <- combined_table %>%
+  mutate_if(is.numeric, round, digits = 3)
+```
+
+```{r}
+#| echo: false
+combined_table <- combined_table %>% 
+  mutate('Sample Size'=c("n=10", rep("",4), "n=50",rep("",4), "n=100",rep("",4)),.before = Model)
+knitr::kable(combined_table)
+```
+
+It seems like for the same sample size, the estimated fixed effect are the same across different methods. The random effect's standard deviance vary slightly across different models. Keeping in mind that the $\sigma$ = 0.938, $\beta_0$ = 3.06 and $\beta_1$= -0.008. The bias of the fixed effects are as follows:
+
+| Sample Size | Intercept Bias               | `Week` Bias                          |
+|------------------|-----------------------------------|--------------------|
+| n =10       | `r round(2.654-3.0628143,2)` | `r round(0.211-(-0.0081189),2)`      |
+| n=50        | `r round(3.269-3.0628143,2)` | `r round(-0.128    -(-0.0081189),2)` |
+| n=100       | `r round(2.971-3.0628143,2)` | `r round(0.016     -(-0.0081189),2)` |
+
+: Bias of the Fixed Effect (Estimated Value - True Value)
+
+If we consider the absolute value of the bias, then we can see that as the sample size increases, the closer it is getting to true parameter value. Furthermore, we see that the sum of the error variance and random intercept variance (table below) is relatively similar across the different methods. Particularly, functions from the `lme4` and `nlme` package seem to have a more similar sum of variance that is estimated than those of `geepack` and `glmmTMB`.
+
+```{r}
+#| echo: false
+combined_table$Error_Term_sd_numeric <- as.numeric(combined_table$Error_Term_sd)
+bias_table <- combined_table %>% mutate(FE_intercept_diff = Fixed_Effect_intercept - 3.063, 
+                          FE_Week_diff = Fixed_Effect_Week + 0.008,
+                          Random_Effect_sd_diff = Random_Effect_sd - 0.7626,
+                          Error_sd_diff = Error_Term_sd_numeric - 0.547) %>% 
+  as.data.frame() 
+bias_table[,c(1,2,5,7)] %>% mutate(Random_Effect_var = Random_Effect_sd^2,
+                                   Error_Term_var = Error_Term_sd_numeric^2)%>%
+  rowwise() %>% 
+    mutate(Sum_of_var = sum(Random_Effect_var, Error_Term_var, na.rm = TRUE)) %>%
+  dplyr::select(`Sample Size`, Model, Random_Effect_var, Error_Term_var, Sum_of_var ) %>% knitr::kable()
+```
+
+## Simulation 2: Fitting Models on LME-generated Data
+
+In the same spirit, we'll apply the same set of models to the LME-generated data using the `extract_coef()` function.
+
+```{r}
+#| echo: false
+coef_list_tidy <- lapply(sim_data, extract_coef)
+combined_table <- dplyr::bind_rows(coef_list_tidy)
+
+# Round numbers to 3 decimal places
+combined_table <- combined_table %>%
+  mutate_if(is.numeric, round, digits = 3)
+combined_table <- combined_table %>% 
+  mutate('Sample Size'=c("n=10", rep("",4), "n=50",rep("",4), "n=100",rep("",4)),.before = Model)
+knitr::kable(combined_table)
+```
+
+Keeping in mind the true parameters we're trying to estimate is $\beta_0= 3.063, \beta_1=-0.008, \tau = 0.7626,  \sigma=0.547$. We show the bias of each of the estimates below:
+
+```{r}
+#| echo: false
+combined_table$Error_Term_sd_numeric <- as.numeric(combined_table$Error_Term_sd)
+bias_table <- combined_table %>% mutate(FE_intercept_diff = Fixed_Effect_intercept - 3.063, 
+                          FE_Week_diff = Fixed_Effect_Week + 0.008,
+                          Random_Effect_sd_diff = Random_Effect_sd - 0.7626,
+                          Error_sd_diff = Error_Term_sd_numeric - 0.547) %>% 
+  as.data.frame() 
+bias_table[,c(1,2,8,9,10,11)] %>% knitr::kable()
+```
+
+We can see that the implementation of both LME models in the `lme4` and `nlme` package yield the same estimates. Furthermore, we can see that the GEE and GLS methods yield a larger variance term in the error since it wasn't able to capture the variance of the real data generated from the random intercept. However, if we take the sum of the estimated variance of the error and the random effect variance, then we get roughly the same numbers (shown below), indicating that the two methods used different ways to capture the total variance in the data.
+
+```{r}
+#| echo: false
+bias_table[,c(1,2,5,7)] %>% mutate(Random_Effect_var = Random_Effect_sd^2,
+                                   Error_Term_var = Error_Term_sd_numeric^2)%>%
+  rowwise() %>% 
+    mutate(Sum_of_var = sum(Random_Effect_var, Error_Term_var, na.rm = TRUE)) %>%
+  dplyr::select(`Sample Size`, Model, Random_Effect_var, Error_Term_var, Sum_of_var ) %>% knitr::kable()
+```
+
+## Discussions and Conclusions
+
+Through this straigtforward simulation study, we have shown that on this dataset, the various packages were able to achieve the same fixed effect estimates. The differences lie in the estimation of the variance. For models that that estimate the random effect, part of the 'true variance' will be captured via the covariance matrix in the random effect. Furthermore, we noticed that functions from the `lme4` and `nlme` package seem to have a more similar sum of variance that is estimated than those of `geepack` and `glmmTMB`, perhaps due to the algorithm implemented in the packages to solve for the solution.
+
+## References
+
+-   Wang, Wei, and Michael O. Harhay. "A comparative study of R functions for clustered data analysis." Trials 22 (2021): 1-8.
+
+-    Hubbard, Alan E., et al. "To GEE or not to GEE: comparing population average and mixed models for estimating the associations between neighborhood risk factors and health." Epidemiology (2010): 467-474.
+
+-    Fitzmaurice, Garrett M., Nan M. Laird, and James H. Ware. Applied longitudinal analysis. Vol. 998. John Wiley & Sons, 2012.
+
+-   Henry, Keith, et al. "A randomized, controlled, double-blind study comparing the survival benefit of four different reverse transcriptase inhibitor therapies (three-drug, two-drug, and alternating drug) for the treatment of advanced AIDS." JAIDS Journal of Acquired Immune Deficiency Syndromes 19.4 (1998): 339-349.

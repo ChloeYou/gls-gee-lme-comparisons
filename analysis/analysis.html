@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Chloe You">
+
+<title>Compare GEE, GLS, LME Packages</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="analysis_files/libs/quarto-html/quarto.js"></script>
+<script src="analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="analysis_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="analysis_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Compare GEE, GLS, LME Packages</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Chloe You </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<p>Generalized least squares (GLS), generalized estimating equations (GEE), and linear mixed effects (LME) models are commonly used methods for estimating associations in clustered or correlated data to make unbiased statistical inferences. Fixed effects are population parameters that are constant across individuals, while random effects are individual-specific parameters that vary randomly across units and are modeled as random variables to account for residual heterogeneity not explained by fixed effects. LME models allow for both fixed and random effects, while GEE models allow only for fixed effects. In the case of linear models, the GLS estimator of the coefficients can be considered a special case of GEE (Fitzmaurice et al., 2012).</p>
+<p>In both methods, we assume that the errors are correlated and that the covariance structure can be modeled using some set of unknown parameters. Both methods estimate these unknown parameters and use them to improve the estimation of the fixed effects. However, the difference lies in how they handle the random effects.</p>
+<p>In GLS/GEE, we assume that the errors are correlated, but we do not explicitly model any random effects. Instead, we estimate the covariance matrix of the errors and use it to calculate weights for each observation. These weights are then used to estimate the fixed effects of the model.</p>
+<p>In LME, we model both fixed and random effects. The fixed effects are similar to those in GLS, but the random effects capture the between-subject variation that is not explained by the fixed effects. The random effects are assumed to be normally distributed with mean zero and a covariance matrix that is also a function of some set of unknown parameters. In LME, the covariance matrix of the errors is a combination of the covariance matrix of the random effects and the residual covariance matrix.</p>
+<p>There are several software packages that can fit GLS, GEE, and LME models, including SAS, R, WinBUGS, and SPSS. R is the most popular software for these models because it is open-source and has a vast repository of packages. For example, the `geepack` package is popular for fitting GEEs and allows for a variety of correlation structures and link functions. Other commonly used packages for fitting GEEs include `gee` . Popular R packages for fitting GLS models include `gee`, `nlme`, and `lme4`. Some packages support fitting more than one of the three approaches and are listed multiple times. Common packages for fitting mixed-effect models include `lme4` and `nlme` . There are also packages that apply mixed-effects models in a Bayesian framework, such as `brms`.</p>
+</section>
+<section id="objective" class="level2">
+<h2 class="anchored" data-anchor-id="objective">Objective</h2>
+<p>Although R is popular for these models, the implementation of the functions varies across packages and the interpretation of the results also varies based on the model and package used. This project aims to compare popular GLS, GEE, and LME packages in R when applied to simulated data. The goal is to recover the true coefficients and error terms and to model the heterogeneity captured in the different models. The secondary goal is to see the effect of sample size on recovering the true coefficient. The project should help to gain a better understanding of the different models and packages in R.</p>
+</section>
+<section id="data-generation-process" class="level2">
+<h2 class="anchored" data-anchor-id="data-generation-process">Data Generation Process</h2>
+<p>There will be 2 simulation settings. For the first simulation, we will fit a GLS on the CD4 data and extract the coefficients to generate data with n = 10, 50, 100. We will then try to fit GLS, GEE, and LME models from varying packages to get the coefficients and error terms.</p>
+<p>The first model we fit on the log CD4 data is a GLS. We assume a compound symmetry structure corresponding to a constant correlation. The covariance matrix is defined as:</p>
+<p><span class="math display">\[
+\boldsymbol{\Sigma} = \sigma^2 (\rho \boldsymbol{J} + (1-\rho)\boldsymbol{I})
+\]</span></p>
+<p>where <span class="math inline">\(\sigma^2\)</span> is the variance of the errors, <span class="math inline">\(\rho\)</span> is the correlation coefficient between any two measurements taken at the same time for the same individual, <span class="math inline">\(\boldsymbol{J}\)</span> is a matrix of ones, <span class="math inline">\(\boldsymbol{I}\)</span> is an identity matrix. This means that the error terms for any two individuals at the same time point are equally correlated, and the correlation is constant across all time points.</p>
+<p>Substituting this into the GLS model, we get:</p>
+<p><span class="math display">\[
+Y_{ij} = \beta_{0} + \beta_1 Time_{ij} + \epsilon_{ij},
+\boldsymbol{\epsilon} \sim N(0,\Sigma)
+\]</span> In this model, <span class="math inline">\(CD4_{ij}\)</span> represents the CD4 count for the <span class="math inline">\(i\)</span>th individual at time <span class="math inline">\(j\)</span> , and <span class="math inline">\(Time_{ij}\)</span> represents the time (in weeks) for the <span class="math inline">\(i\)</span>th individual at time <span class="math inline">\(j\)</span>. <span class="math inline">\(\boldsymbol{\epsilon}\)</span> is a vector of errors that follows a multivariate normal distribution with mean zero and covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span>.</p>
+<p>The second simulation will use coefficients estimated via a random intercept linear mixed effect model. Similarly, we will generate data with sample sizes n = 10, 50, 100, and fit GLS, GEE, LME models to recover the coefficients.</p>
+<p>The model we fit follows the below specification:</p>
+<p><span class="math display">\[
+CD4_{ij} = \beta_{0i} + \beta_1 Time_{ij} + \epsilon_{ij}
+\]</span> where <span class="math inline">\(\beta_{0i}\)</span> represents the random intercept for the <span class="math inline">\(i\)</span>th individual and <span class="math inline">\(\beta_1\)</span> represents the fixed effect of time. <span class="math inline">\(\epsilon_{ij}\)</span> represents the residual error for the <span class="math inline">\(i\)</span>th individual at time <span class="math inline">\(j\)</span>, assumed to be normally distributed with mean 0 and constant variance <span class="math inline">\(\sigma^2\)</span>. We assume that <span class="math inline">\(\beta_{0i} \sim N(0, \tau^2)\)</span>, and that the random intercepts for different individuals are independent of each other.</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(cd4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 4,860
+Columns: 6
+$ ID        &lt;int&gt; 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 5, 5, 5, …
+$ Treatment &lt;fct&gt; 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 1, 3, 3, 3, 3, 1, 1, 1, …
+$ Age       &lt;dbl&gt; 36.4271, 36.4271, 36.4271, 36.4271, 36.4271, 36.4271, 47.846…
+$ Gender    &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ Week      &lt;dbl&gt; 0.0000, 7.5714, 15.5714, 23.5714, 32.5714, 40.0000, 0.0000, …
+$ log_CD4   &lt;dbl&gt; 3.135494, 3.044522, 2.772589, 2.833213, 3.218876, 3.044522, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(cd4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ID"        "Treatment" "Age"       "Gender"    "Week"      "log_CD4"  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">n_distinct</span>(cd4<span class="sc">$</span>ID) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1290</code></pre>
+</div>
+</div>
+<p>Now we generate the first set of data based on GLS:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>gls_model <span class="ot">&lt;-</span> <span class="fu">gls</span>(log_CD4 <span class="sc">~</span> Week, <span class="at">data =</span> cd4, </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">correlation =</span> <span class="fu">corCompSymm</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> ID))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>gls_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(gls_model)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>gls_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generalized least squares fit by REML
+  Model: log_CD4 ~ Week 
+  Data: cd4 
+       AIC      BIC    logLik
+  10587.85 10613.81 -5289.926
+
+Correlation Structure: Compound symmetry
+ Formula: ~1 | ID 
+ Parameter estimate(s):
+      Rho 
+0.6600312 
+
+Coefficients:
+                 Value  Std.Error   t-value p-value
+(Intercept)  3.0628143 0.02469397 124.03087       0
+Week        -0.0081189 0.00066339 -12.23847       0
+
+ Correlation: 
+     (Intr)
+Week -0.369
+
+Standardized residuals:
+        Min          Q1         Med          Q3         Max 
+-2.83094464 -0.62927658  0.04970727  0.68101285  3.58643958 
+
+Residual standard error: 0.9386793 
+Degrees of freedom: 4860 total; 4858 residual</code></pre>
+</div>
+</div>
+<p>We extract the parameters from the model fit.</p>
+<ul>
+<li><p><span class="math inline">\(\hat{\rho}\)</span> =0.66</p></li>
+<li><p><span class="math inline">\(\hat{\sigma}\)</span> = 0.938</p></li>
+<li><p><span class="math inline">\(\beta_0\)</span> = 3.06</p></li>
+<li><p><span class="math inline">\(\beta_1\)</span>= -0.008</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify number of individuals and number of time points</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>n_values <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create empty data frames to store simulated data</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>df_list <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="fu">length</span>(n_values))</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df_list) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"df_"</span>, n_values)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_along</span>(df_list)) {</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  df_list[[i]] <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ID =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_values[i], <span class="at">each =</span> t), </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                             <span class="at">Week =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>t, n_values[i]), </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                             <span class="at">log_CD4 =</span> <span class="cn">NA</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Set correlation parameter</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.6600312</span> </span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Set residual standard deviation</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.9386793</span> </span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop through each value of n and generate simulated data</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="fu">seq_along</span>(df_list)) {</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> n_values[j]</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate intercepts for each individual</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  intercepts <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> gls_summary<span class="sc">$</span>coefficients[<span class="dv">1</span>], </span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>                      <span class="at">sd =</span> gls_summary<span class="sc">$</span>tTable[<span class="dv">1</span>,<span class="dv">2</span>])</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate time coefficients for each individual</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>  time_coefs <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> gls_summary<span class="sc">$</span>coefficients[<span class="dv">2</span>], </span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>                      <span class="at">sd =</span> gls_summary<span class="sc">$</span>tTable[<span class="dv">2</span>,<span class="dv">2</span>])</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  cov_mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(rho<span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span>, <span class="at">nrow =</span> t, <span class="at">ncol =</span> t)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">diag</span>(cov_mat) <span class="ot">&lt;-</span> sigma<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate random errors</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  errors <span class="ot">&lt;-</span> <span class="fu">mvrnorm</span>(<span class="at">n =</span> n<span class="sc">*</span>t, <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, t), <span class="at">Sigma =</span> cov_mat) </span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate log CD4 counts for this individual at each time point</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>t) {</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    log_CD4 <span class="ot">&lt;-</span> intercepts[i] <span class="sc">+</span> time_coefs[i] <span class="sc">*</span> k <span class="sc">+</span> errors[(i<span class="dv">-1</span>)<span class="sc">*</span>t<span class="sc">+</span>k]</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    df_list[[j]]<span class="sc">$</span>log_CD4[df_list[[j]]<span class="sc">$</span>ID <span class="sc">==</span> i <span class="sc">&amp;</span> df_list[[j]]<span class="sc">$</span>Week <span class="sc">==</span> k] <span class="ot">&lt;-</span> log_CD4</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert log CD4 counts to actual CD4 counts</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>  df_list[[j]]<span class="sc">$</span>CD4 <span class="ot">&lt;-</span> <span class="fu">exp</span>(df_list[[j]]<span class="sc">$</span>log_CD4)</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now move on to generating the second set of data based on the linear mixed effect model. First we fit the CD4 data and get estimated parameters:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>lme_model <span class="ot">&lt;-</span> nlme<span class="sc">::</span><span class="fu">lme</span>(log_CD4 <span class="sc">~</span> Week, <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> ID, <span class="at">data =</span> cd4)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>lme_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(lme_model)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>lme_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: cd4 
+       AIC      BIC    logLik
+  10587.85 10613.81 -5289.926
+
+Random effects:
+ Formula: ~1 | ID
+        (Intercept)  Residual
+StdDev:   0.7626047 0.5473143
+
+Fixed effects:  log_CD4 ~ Week 
+                 Value  Std.Error   DF   t-value p-value
+(Intercept)  3.0628143 0.02469397 3569 124.03087       0
+Week        -0.0081189 0.00066339 3569 -12.23847       0
+ Correlation: 
+     (Intr)
+Week -0.369
+
+Standardized Within-Group Residuals:
+         Min           Q1          Med           Q3          Max 
+-4.265926722 -0.503218448  0.001991738  0.531941581  3.973768985 
+
+Number of Observations: 4860
+Number of Groups: 1290 </code></pre>
+</div>
+</div>
+<p>We extract the parameters from the model fit.</p></li>
+<li><p><span class="math inline">\(\beta_{0i} = \beta_0 + b_i\)</span> and <span class="math inline">\(b_i \sim \text{N}(0,\tau^2)\)</span>. From the model output, we gather that <span class="math inline">\(\hat{\beta_0}= 3.0628143\)</span> and <span class="math inline">\(\hat{\tau} =0.7626047\)</span>.</p></li>
+<li><p><span class="math inline">\(\hat{\beta_1}= -0.008\)</span></p></li>
+<li><p><span class="math inline">\(\hat{\sigma} =0.547\)</span></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify number of individuals and number of time points</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>n_list <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an empty list to store simulated data frames</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>sim_data <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop through different sample sizes</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(n_list)) {</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the current sample size</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> n_list[i]</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create empty data frame to store simulated data</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ID =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="at">each =</span> t), <span class="at">Week =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>t, n), <span class="at">log_CD4 =</span> <span class="cn">NA</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate time coefficients for each individual</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  time_coefs <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> lme_summary<span class="sc">$</span>tTable[<span class="dv">2</span>,<span class="dv">1</span>], </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>                      <span class="at">sd =</span> gls_summary<span class="sc">$</span>tTable[<span class="dv">2</span>,<span class="dv">2</span>])</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Loop through each individual and generate simulated data</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate random intercept for this individual</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    random_intercept <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">0.7626047</span>) <span class="co"># tau</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>t){</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate log CD4 counts for this individual at the given time point</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    log_CD4 <span class="ot">&lt;-</span> lme_summary<span class="sc">$</span>tTable[<span class="dv">1</span>,<span class="dv">1</span>] <span class="sc">+</span> </span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>              random_intercept <span class="sc">+</span> </span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>              time_coefs[j] <span class="sc">*</span> k <span class="sc">+</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>              <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">0.5473143</span>) <span class="co"># sigma</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Store simulated data in data frame</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>log_CD4[df<span class="sc">$</span>ID <span class="sc">==</span> j <span class="sc">&amp;</span> df<span class="sc">$</span>Week <span class="sc">==</span> k] <span class="ot">&lt;-</span> log_CD4</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert log CD4 counts to actual CD4 counts</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>CD4 <span class="ot">&lt;-</span> <span class="fu">exp</span>(df<span class="sc">$</span>log_CD4)</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add the simulated data frame to the list</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>  sim_data[[i]] <span class="ot">&lt;-</span> df</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So far, we have generated 6 dataframes stored in 2 lists, <code>df_list</code> and <code>sim_data</code> .</p>
+</section>
+<section id="simulation-1-fitting-models-on-gls-generated-data" class="level2">
+<h2 class="anchored" data-anchor-id="simulation-1-fitting-models-on-gls-generated-data">Simulation 1: Fitting Models on GLS-generated Data</h2>
+<p>Let’s try using different packages to fit the data generated via the GLS model. Namely, the packages listed below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(geepack)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We fit a model with log CD4 counts as outcome, and include an intercept and <code>Week</code> as a predictor.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to fit models and extract coefficients</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>extract_coef <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># gls using nlme package</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  gls <span class="ot">&lt;-</span> <span class="fu">gls</span>(log_CD4 <span class="sc">~</span> Week, <span class="at">data =</span> df, </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">correlation =</span> <span class="fu">corCompSymm</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> ID))</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># LME using nlme package</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  lme_nlme <span class="ot">&lt;-</span> nlme<span class="sc">::</span><span class="fu">lme</span>(log_CD4 <span class="sc">~</span> Week, <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>ID, <span class="at">data =</span> df)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># LME using lme4 package</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  lme_lme4 <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">lmer</span>(log_CD4 <span class="sc">~</span> Week <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ID), <span class="at">data =</span> df)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># GEE using geepack package</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  gee_geepack <span class="ot">&lt;-</span> geepack<span class="sc">::</span><span class="fu">geeglm</span>(log_CD4 <span class="sc">~</span> Week, <span class="at">id =</span> ID, <span class="at">data =</span> df)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># generalized linear mixed model using glmmTMB package</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  glmm_glmmTMB <span class="ot">&lt;-</span> glmmTMB<span class="sc">::</span><span class="fu">glmmTMB</span>(log_CD4 <span class="sc">~</span> Week <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ID), <span class="at">data =</span> df)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  coef_table <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"GLS (nlme)"</span>, <span class="st">"LME (nlme)"</span>, <span class="st">"LME (lme4)"</span>, <span class="st">"GEE (geepack)"</span>, <span class="st">"GLMM (glmmTMB)"</span>),</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">Fixed_Effect_intercept =</span> <span class="fu">c</span>(<span class="fu">tidy</span>(gls)<span class="sc">$</span>estimate[<span class="dv">1</span>],</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">tidy</span>(lme_nlme)<span class="sc">$</span>estimate[<span class="dv">1</span>],</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">tidy</span>(lme_lme4)<span class="sc">$</span>estimate[<span class="dv">1</span>],</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">tidy</span>(gee_geepack)<span class="sc">$</span>estimate[<span class="dv">1</span>],</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">tidy</span>(glmm_glmmTMB)<span class="sc">$</span>estimate[<span class="dv">1</span>]),</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">Fixed_Effect_Week =</span> <span class="fu">c</span>(<span class="fu">tidy</span>(gls)<span class="sc">$</span>estimate[<span class="dv">2</span>],</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">tidy</span>(lme_nlme)<span class="sc">$</span>estimate[<span class="dv">2</span>],</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">tidy</span>(lme_lme4)<span class="sc">$</span>estimate[<span class="dv">2</span>],</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">tidy</span>(gee_geepack)<span class="sc">$</span>estimate[<span class="dv">2</span>],</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">tidy</span>(glmm_glmmTMB)<span class="sc">$</span>estimate[<span class="dv">2</span>]),</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">Random_Effect_sd =</span> <span class="fu">c</span>(<span class="cn">NA</span>,</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>                              (<span class="fu">tidy</span>(lme_nlme)<span class="sc">$</span>estimate[<span class="dv">3</span>]),</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>                              (<span class="fu">tidy</span>(lme_lme4)<span class="sc">$</span>estimate[<span class="dv">3</span>]),</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>                               <span class="cn">NA</span>,</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>                               (<span class="fu">tidy</span>(glmm_glmmTMB)<span class="sc">$</span>estimate[<span class="dv">3</span>])),</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">Error_Term_sd =</span> <span class="fu">c</span>(gls<span class="sc">$</span>sigma,</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>                              (<span class="fu">tidy</span>(lme_nlme)<span class="sc">$</span>estimate[<span class="dv">4</span>]),</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>                              (<span class="fu">tidy</span>(lme_lme4)<span class="sc">$</span>estimate[<span class="dv">4</span>]),</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">sqrt</span>(<span class="fu">summary</span>(gee_geepack)<span class="sc">$</span>dispersion[<span class="dv">1</span>]),</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>                              (<span class="fu">tidy</span>(glmm_glmmTMB)<span class="sc">$</span>estimate[<span class="dv">4</span>]))</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(coef_table)</span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>coef_list_tidy <span class="ot">&lt;-</span> <span class="fu">lapply</span>(df_list, extract_coef)</span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine tables into one</span></span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>combined_table <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(coef_list_tidy)</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Round numbers to 3 decimal places</span></span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>combined_table <span class="ot">&lt;-</span> combined_table <span class="sc">%&gt;%</span></span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, round, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 18%">
+<col style="width: 17%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Sample Size</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">Fixed_Effect_intercept</th>
+<th style="text-align: right;">Fixed_Effect_Week</th>
+<th style="text-align: right;">Random_Effect_sd</th>
+<th style="text-align: left;">Error_Term_sd</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">n=10</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">2.654</td>
+<td style="text-align: right;">0.211</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.9991953</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">2.654</td>
+<td style="text-align: right;">0.211</td>
+<td style="text-align: right;">0.440</td>
+<td style="text-align: left;">0.8969628</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">2.654</td>
+<td style="text-align: right;">0.211</td>
+<td style="text-align: right;">0.440</td>
+<td style="text-align: left;">0.8969628</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">2.654</td>
+<td style="text-align: right;">0.211</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.9619615</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">2.654</td>
+<td style="text-align: right;">0.211</td>
+<td style="text-align: right;">0.401</td>
+<td style="text-align: left;">0.8742513</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">n=50</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">3.269</td>
+<td style="text-align: right;">-0.128</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.9410624</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">3.269</td>
+<td style="text-align: right;">-0.128</td>
+<td style="text-align: right;">0.078</td>
+<td style="text-align: left;">0.9378338</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">3.269</td>
+<td style="text-align: right;">-0.128</td>
+<td style="text-align: right;">0.078</td>
+<td style="text-align: left;">0.9378339</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">3.269</td>
+<td style="text-align: right;">-0.128</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.9347459</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">3.269</td>
+<td style="text-align: right;">-0.128</td>
+<td style="text-align: right;">0.055</td>
+<td style="text-align: left;">0.9331328</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">n=100</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">2.971</td>
+<td style="text-align: right;">0.016</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.9254215</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">2.971</td>
+<td style="text-align: right;">0.016</td>
+<td style="text-align: right;">0.080</td>
+<td style="text-align: left;">0.9219698</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">2.971</td>
+<td style="text-align: right;">0.016</td>
+<td style="text-align: right;">0.080</td>
+<td style="text-align: left;">0.92197</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">2.971</td>
+<td style="text-align: right;">0.016</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.9223201</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">2.971</td>
+<td style="text-align: right;">0.016</td>
+<td style="text-align: right;">0.070</td>
+<td style="text-align: left;">0.919662</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>It seems like for the same sample size, the estimated fixed effect are the same across different methods. The random effect’s standard deviance vary slightly across different models. Keeping in mind that the <span class="math inline">\(\sigma\)</span> = 0.938, <span class="math inline">\(\beta_0\)</span> = 3.06 and <span class="math inline">\(\beta_1\)</span>= -0.008. The bias of the fixed effects are as follows:</p>
+<table class="table">
+<caption>Bias of the Fixed Effect (Estimated Value - True Value)</caption>
+<colgroup>
+<col style="width: 24%">
+<col style="width: 47%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Sample Size</th>
+<th>Intercept Bias</th>
+<th><code>Week</code> Bias</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>n =10</td>
+<td>-0.41</td>
+<td>0.22</td>
+</tr>
+<tr class="even">
+<td>n=50</td>
+<td>0.21</td>
+<td>-0.12</td>
+</tr>
+<tr class="odd">
+<td>n=100</td>
+<td>-0.09</td>
+<td>0.02</td>
+</tr>
+</tbody>
+</table>
+<p>If we consider the absolute value of the bias, then we can see that as the sample size increases, the closer it is getting to true parameter value. Furthermore, we see that the sum of the error variance and random intercept variance (table below) is relatively similar across the different methods. Particularly, functions from the <code>lme4</code> and <code>nlme</code> package seem to have a more similar sum of variance that is estimated than those of <code>geepack</code> and <code>glmmTMB</code>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 21%">
+<col style="width: 25%">
+<col style="width: 21%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Sample Size</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">Random_Effect_var</th>
+<th style="text-align: right;">Error_Term_var</th>
+<th style="text-align: right;">Sum_of_var</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">n=10</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.9983913</td>
+<td style="text-align: right;">0.9983913</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">0.193600</td>
+<td style="text-align: right;">0.8045423</td>
+<td style="text-align: right;">0.9981423</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">0.193600</td>
+<td style="text-align: right;">0.8045423</td>
+<td style="text-align: right;">0.9981423</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.9253700</td>
+<td style="text-align: right;">0.9253700</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">0.160801</td>
+<td style="text-align: right;">0.7643153</td>
+<td style="text-align: right;">0.9251163</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">n=50</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.8855983</td>
+<td style="text-align: right;">0.8855983</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">0.006084</td>
+<td style="text-align: right;">0.8795322</td>
+<td style="text-align: right;">0.8856162</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">0.006084</td>
+<td style="text-align: right;">0.8795325</td>
+<td style="text-align: right;">0.8856165</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.8737499</td>
+<td style="text-align: right;">0.8737499</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">0.003025</td>
+<td style="text-align: right;">0.8707368</td>
+<td style="text-align: right;">0.8737618</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">n=100</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.8564049</td>
+<td style="text-align: right;">0.8564049</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">0.006400</td>
+<td style="text-align: right;">0.8500284</td>
+<td style="text-align: right;">0.8564284</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">0.006400</td>
+<td style="text-align: right;">0.8500288</td>
+<td style="text-align: right;">0.8564288</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.8506743</td>
+<td style="text-align: right;">0.8506743</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">0.004900</td>
+<td style="text-align: right;">0.8457782</td>
+<td style="text-align: right;">0.8506782</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="simulation-2-fitting-models-on-lme-generated-data" class="level2">
+<h2 class="anchored" data-anchor-id="simulation-2-fitting-models-on-lme-generated-data">Simulation 2: Fitting Models on LME-generated Data</h2>
+<p>In the same spirit, we’ll apply the same set of models to the LME-generated data using the <code>extract_coef()</code> function.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 18%">
+<col style="width: 17%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Sample Size</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">Fixed_Effect_intercept</th>
+<th style="text-align: right;">Fixed_Effect_Week</th>
+<th style="text-align: right;">Random_Effect_sd</th>
+<th style="text-align: left;">Error_Term_sd</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">n=10</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">3.194</td>
+<td style="text-align: right;">-0.070</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.6300906</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">3.194</td>
+<td style="text-align: right;">-0.070</td>
+<td style="text-align: right;">0.410</td>
+<td style="text-align: left;">0.4781883</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">3.194</td>
+<td style="text-align: right;">-0.070</td>
+<td style="text-align: right;">0.410</td>
+<td style="text-align: left;">0.4781883</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">3.194</td>
+<td style="text-align: right;">-0.070</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.6040984</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">3.194</td>
+<td style="text-align: right;">-0.070</td>
+<td style="text-align: right;">0.384</td>
+<td style="text-align: left;">0.4660803</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">n=50</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">3.246</td>
+<td style="text-align: right;">-0.011</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.8875716</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">3.246</td>
+<td style="text-align: right;">-0.011</td>
+<td style="text-align: right;">0.675</td>
+<td style="text-align: left;">0.5764867</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">3.246</td>
+<td style="text-align: right;">-0.011</td>
+<td style="text-align: right;">0.675</td>
+<td style="text-align: left;">0.5764867</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">3.246</td>
+<td style="text-align: right;">-0.011</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.8799109</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">3.246</td>
+<td style="text-align: right;">-0.011</td>
+<td style="text-align: right;">0.667</td>
+<td style="text-align: left;">0.5735971</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">n=100</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">2.987</td>
+<td style="text-align: right;">0.029</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.8621196</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">2.987</td>
+<td style="text-align: right;">0.029</td>
+<td style="text-align: right;">0.675</td>
+<td style="text-align: left;">0.5359887</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">2.987</td>
+<td style="text-align: right;">0.029</td>
+<td style="text-align: right;">0.675</td>
+<td style="text-align: left;">0.5359888</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">2.987</td>
+<td style="text-align: right;">0.029</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">0.8583566</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">2.987</td>
+<td style="text-align: right;">0.029</td>
+<td style="text-align: right;">0.672</td>
+<td style="text-align: left;">0.534647</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Keeping in mind the true parameters we’re trying to estimate is <span class="math inline">\(\beta_0= 3.063, \beta_1=-0.008, \tau = 0.7626, \sigma=0.547\)</span>. We show the bias of each of the estimates below:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 19%">
+<col style="width: 13%">
+<col style="width: 23%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Sample Size</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">FE_intercept_diff</th>
+<th style="text-align: right;">FE_Week_diff</th>
+<th style="text-align: right;">Random_Effect_sd_diff</th>
+<th style="text-align: right;">Error_sd_diff</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">n=10</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">0.131</td>
+<td style="text-align: right;">-0.062</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.0830906</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">0.131</td>
+<td style="text-align: right;">-0.062</td>
+<td style="text-align: right;">-0.3526</td>
+<td style="text-align: right;">-0.0688117</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">0.131</td>
+<td style="text-align: right;">-0.062</td>
+<td style="text-align: right;">-0.3526</td>
+<td style="text-align: right;">-0.0688117</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">0.131</td>
+<td style="text-align: right;">-0.062</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.0570984</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">0.131</td>
+<td style="text-align: right;">-0.062</td>
+<td style="text-align: right;">-0.3786</td>
+<td style="text-align: right;">-0.0809197</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">n=50</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">0.183</td>
+<td style="text-align: right;">-0.003</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.3405716</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">0.183</td>
+<td style="text-align: right;">-0.003</td>
+<td style="text-align: right;">-0.0876</td>
+<td style="text-align: right;">0.0294867</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">0.183</td>
+<td style="text-align: right;">-0.003</td>
+<td style="text-align: right;">-0.0876</td>
+<td style="text-align: right;">0.0294867</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">0.183</td>
+<td style="text-align: right;">-0.003</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.3329109</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">0.183</td>
+<td style="text-align: right;">-0.003</td>
+<td style="text-align: right;">-0.0956</td>
+<td style="text-align: right;">0.0265971</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">n=100</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">-0.076</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.3151196</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">-0.076</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">-0.0876</td>
+<td style="text-align: right;">-0.0110113</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">-0.076</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">-0.0876</td>
+<td style="text-align: right;">-0.0110112</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">-0.076</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.3113566</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">-0.076</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">-0.0906</td>
+<td style="text-align: right;">-0.0123530</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>We can see that the implementation of both LME models in the <code>lme4</code> and <code>nlme</code> package yield the same estimates. Furthermore, we can see that the GEE and GLS methods yield a larger variance term in the error since it wasn’t able to capture the variance of the real data generated from the random intercept. However, if we take the sum of the estimated variance of the error and the random effect variance, then we get roughly the same numbers (shown below), indicating that the two methods used different ways to capture the total variance in the data.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 21%">
+<col style="width: 25%">
+<col style="width: 21%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Sample Size</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">Random_Effect_var</th>
+<th style="text-align: right;">Error_Term_var</th>
+<th style="text-align: right;">Sum_of_var</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">n=10</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.3970142</td>
+<td style="text-align: right;">0.3970142</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">0.168100</td>
+<td style="text-align: right;">0.2286641</td>
+<td style="text-align: right;">0.3967641</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">0.168100</td>
+<td style="text-align: right;">0.2286641</td>
+<td style="text-align: right;">0.3967641</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.3649349</td>
+<td style="text-align: right;">0.3649349</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">0.147456</td>
+<td style="text-align: right;">0.2172309</td>
+<td style="text-align: right;">0.3646869</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">n=50</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.7877833</td>
+<td style="text-align: right;">0.7877833</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">0.455625</td>
+<td style="text-align: right;">0.3323369</td>
+<td style="text-align: right;">0.7879619</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">0.455625</td>
+<td style="text-align: right;">0.3323369</td>
+<td style="text-align: right;">0.7879619</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.7742432</td>
+<td style="text-align: right;">0.7742432</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">0.444889</td>
+<td style="text-align: right;">0.3290136</td>
+<td style="text-align: right;">0.7739026</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">n=100</td>
+<td style="text-align: left;">GLS (nlme)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.7432502</td>
+<td style="text-align: right;">0.7432502</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (nlme)</td>
+<td style="text-align: right;">0.455625</td>
+<td style="text-align: right;">0.2872839</td>
+<td style="text-align: right;">0.7429089</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">LME (lme4)</td>
+<td style="text-align: right;">0.455625</td>
+<td style="text-align: right;">0.2872839</td>
+<td style="text-align: right;">0.7429089</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GEE (geepack)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.7367760</td>
+<td style="text-align: right;">0.7367760</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">GLMM (glmmTMB)</td>
+<td style="text-align: right;">0.451584</td>
+<td style="text-align: right;">0.2858474</td>
+<td style="text-align: right;">0.7374314</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="discussions-and-conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="discussions-and-conclusions">Discussions and Conclusions</h2>
+<p>Through this straigtforward simulation study, we have shown that on this dataset, the various packages were able to achieve the same fixed effect estimates. The differences lie in the estimation of the variance. For models that that estimate the random effect, part of the ‘true variance’ will be captured via the covariance matrix in the random effect. Furthermore, we noticed that functions from the <code>lme4</code> and <code>nlme</code> package seem to have a more similar sum of variance that is estimated than those of <code>geepack</code> and <code>glmmTMB</code>, perhaps due to the algorithm implemented in the packages to solve for the solution.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li><p>Wang, Wei, and Michael O. Harhay. “A comparative study of R functions for clustered data analysis.” Trials 22 (2021): 1-8.</p></li>
+<li><p>Hubbard, Alan E., et al.&nbsp;“To GEE or not to GEE: comparing population average and mixed models for estimating the associations between neighborhood risk factors and health.” Epidemiology (2010): 467-474.</p></li>
+<li><p>Fitzmaurice, Garrett M., Nan M. Laird, and James H. Ware. Applied longitudinal analysis. Vol. 998. John Wiley &amp; Sons, 2012.</p></li>
+<li><p>Henry, Keith, et al.&nbsp;“A randomized, controlled, double-blind study comparing the survival benefit of four different reverse transcriptase inhibitor therapies (three-drug, two-drug, and alternating drug) for the treatment of advanced AIDS.” JAIDS Journal of Acquired Immune Deficiency Syndromes 19.4 (1998): 339-349.</p></li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
