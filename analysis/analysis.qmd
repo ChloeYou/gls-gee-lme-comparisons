@@ -306,7 +306,7 @@ knitr::kable(combined_table)
 It seems like for the same sample size, the estimated fixed effect are the same across different methods. The random effect's standard deviance vary slightly across different models. Keeping in mind that the $\sigma$ = 0.938, $\beta_0$ = 3.06 and $\beta_1$= -0.008. The bias of the fixed effects are as follows:
 
 | Sample Size | Intercept Bias               | `Week` Bias                          |
-|------------------|-----------------------------------|--------------------|
+|-------------|------------------------------|--------------------------------------|
 | n =10       | `r round(2.654-3.0628143,2)` | `r round(0.211-(-0.0081189),2)`      |
 | n=50        | `r round(3.269-3.0628143,2)` | `r round(-0.128    -(-0.0081189),2)` |
 | n=100       | `r round(2.971-3.0628143,2)` | `r round(0.016     -(-0.0081189),2)` |
@@ -347,7 +347,7 @@ combined_table <- combined_table %>%
 knitr::kable(combined_table)
 ```
 
-Keeping in mind the true parameters we're trying to estimate is $\beta_0= 3.063, \beta_1=-0.008, \tau = 0.7626,  \sigma=0.547$. We show the bias of each of the estimates below:
+Keeping in mind the true parameters we're trying to estimate is $\beta_0= 3.063, \beta_1=-0.008, \tau = 0.7626, \sigma=0.547$. We show the bias of each of the estimates below:
 
 ```{r}
 #| echo: false
@@ -379,8 +379,8 @@ Through this straigtforward simulation study, we have shown that on this dataset
 
 -   Wang, Wei, and Michael O. Harhay. "A comparative study of R functions for clustered data analysis." Trials 22 (2021): 1-8.
 
--    Hubbard, Alan E., et al. "To GEE or not to GEE: comparing population average and mixed models for estimating the associations between neighborhood risk factors and health." Epidemiology (2010): 467-474.
+-   Hubbard, Alan E., et al. "To GEE or not to GEE: comparing population average and mixed models for estimating the associations between neighborhood risk factors and health." Epidemiology (2010): 467-474.
 
--    Fitzmaurice, Garrett M., Nan M. Laird, and James H. Ware. Applied longitudinal analysis. Vol. 998. John Wiley & Sons, 2012.
+-   Fitzmaurice, Garrett M., Nan M. Laird, and James H. Ware. Applied longitudinal analysis. Vol. 998. John Wiley & Sons, 2012.
 
 -   Henry, Keith, et al. "A randomized, controlled, double-blind study comparing the survival benefit of four different reverse transcriptase inhibitor therapies (three-drug, two-drug, and alternating drug) for the treatment of advanced AIDS." JAIDS Journal of Acquired Immune Deficiency Syndromes 19.4 (1998): 339-349.
