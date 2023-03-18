@@ -43,14 +43,14 @@ Substituting this into the GLS model, we get:
 $$
 Y_{ij} = \beta_{0} + \beta_1 Time_{ij} + \epsilon_{ij}, 
 \boldsymbol{\epsilon} \sim N(0,\Sigma)
-$$ In this model, $CD4_{ij}$ represents the CD4 count for the $i$th individual at time $j$ , and $Time_{ij}$ represents the time (in weeks) for the $i$th individual at time $j$. $\boldsymbol{\epsilon}$ is a vector of errors that follows a multivariate normal distribution with mean zero and covariance matrix $\boldsymbol{\Sigma}$.
+$$ In this model, $Y_{ij}$ represents the CD4 count for the $i$th individual at time $j$ , and $Time_{ij}$ represents the time (in weeks) for the $i$th individual at time $j$. $\boldsymbol{\epsilon}$ is a vector of errors that follows a multivariate normal distribution with mean zero and covariance matrix $\boldsymbol{\Sigma}$.
 
 The second simulation will use coefficients estimated via a random intercept linear mixed effect model. Similarly, we will generate data with sample sizes n = 10, 50, 100, and fit GLS, GEE, LME models to recover the coefficients.
 
 The model we fit follows the below specification:
 
 $$
-CD4_{ij} = \beta_{0i} + \beta_1 Time_{ij} + \epsilon_{ij}
+Y_{ij} = \beta_{0i} + \beta_1 Time_{ij} + \epsilon_{ij}
 $$ where $\beta_{0i}$ represents the random intercept for the $i$th individual and $\beta_1$ represents the fixed effect of time. $\epsilon_{ij}$ represents the residual error for the $i$th individual at time $j$, assumed to be normally distributed with mean 0 and constant variance $\sigma^2$. We assume that $\beta_{0i} \sim N(0, \tau^2)$, and that the random intercepts for different individuals are independent of each other.
 
 ```{r}
@@ -306,7 +306,7 @@ knitr::kable(combined_table)
 It seems like for the same sample size, the estimated fixed effect are the same across different methods. The random effect's standard deviance vary slightly across different models. Keeping in mind that the $\sigma$ = 0.938, $\beta_0$ = 3.06 and $\beta_1$= -0.008. The bias of the fixed effects are as follows:
 
 | Sample Size | Intercept Bias               | `Week` Bias                          |
-|-------------|------------------------------|--------------------------------------|
+|----------------|-------------------------|-------------------------------|
 | n =10       | `r round(2.654-3.0628143,2)` | `r round(0.211-(-0.0081189),2)`      |
 | n=50        | `r round(3.269-3.0628143,2)` | `r round(-0.128    -(-0.0081189),2)` |
 | n=100       | `r round(2.971-3.0628143,2)` | `r round(0.016     -(-0.0081189),2)` |
@@ -369,6 +369,7 @@ bias_table[,c(1,2,5,7)] %>% mutate(Random_Effect_var = Random_Effect_sd^2,
   rowwise() %>% 
     mutate(Sum_of_var = sum(Random_Effect_var, Error_Term_var, na.rm = TRUE)) %>%
   dplyr::select(`Sample Size`, Model, Random_Effect_var, Error_Term_var, Sum_of_var ) %>% knitr::kable()
+
 ```
 
 ## Discussions and Conclusions
