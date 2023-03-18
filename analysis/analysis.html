@@ -155,11 +155,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="math display">\[
 Y_{ij} = \beta_{0} + \beta_1 Time_{ij} + \epsilon_{ij},
 \boldsymbol{\epsilon} \sim N(0,\Sigma)
-\]</span> In this model, <span class="math inline">\(CD4_{ij}\)</span> represents the CD4 count for the <span class="math inline">\(i\)</span>th individual at time <span class="math inline">\(j\)</span> , and <span class="math inline">\(Time_{ij}\)</span> represents the time (in weeks) for the <span class="math inline">\(i\)</span>th individual at time <span class="math inline">\(j\)</span>. <span class="math inline">\(\boldsymbol{\epsilon}\)</span> is a vector of errors that follows a multivariate normal distribution with mean zero and covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span>.</p>
+\]</span> In this model, <span class="math inline">\(Y_{ij}\)</span> represents the CD4 count for the <span class="math inline">\(i\)</span>th individual at time <span class="math inline">\(j\)</span> , and <span class="math inline">\(Time_{ij}\)</span> represents the time (in weeks) for the <span class="math inline">\(i\)</span>th individual at time <span class="math inline">\(j\)</span>. <span class="math inline">\(\boldsymbol{\epsilon}\)</span> is a vector of errors that follows a multivariate normal distribution with mean zero and covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span>.</p>
 <p>The second simulation will use coefficients estimated via a random intercept linear mixed effect model. Similarly, we will generate data with sample sizes n = 10, 50, 100, and fit GLS, GEE, LME models to recover the coefficients.</p>
 <p>The model we fit follows the below specification:</p>
 <p><span class="math display">\[
-CD4_{ij} = \beta_{0i} + \beta_1 Time_{ij} + \epsilon_{ij}
+Y_{ij} = \beta_{0i} + \beta_1 Time_{ij} + \epsilon_{ij}
 \]</span> where <span class="math inline">\(\beta_{0i}\)</span> represents the random intercept for the <span class="math inline">\(i\)</span>th individual and <span class="math inline">\(\beta_1\)</span> represents the fixed effect of time. <span class="math inline">\(\epsilon_{ij}\)</span> represents the residual error for the <span class="math inline">\(i\)</span>th individual at time <span class="math inline">\(j\)</span>, assumed to be normally distributed with mean 0 and constant variance <span class="math inline">\(\sigma^2\)</span>. We assume that <span class="math inline">\(\beta_{0i} \sim N(0, \tau^2)\)</span>, and that the random intercepts for different individuals are independent of each other.</p>
 <div class="cell">
 
@@ -584,9 +584,9 @@ Number of Groups: 1290 </code></pre>
 <table class="table">
 <caption>Bias of the Fixed Effect (Estimated Value - True Value)</caption>
 <colgroup>
-<col style="width: 24%">
-<col style="width: 47%">
-<col style="width: 27%">
+<col style="width: 22%">
+<col style="width: 34%">
+<col style="width: 43%">
 </colgroup>
 <thead>
 <tr class="header">
