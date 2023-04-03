@@ -372,6 +372,72 @@ bias_table[,c(1,2,5,7)] %>% mutate(Random_Effect_var = Random_Effect_sd^2,
 
 ```
 
+Last but not least, we take a look at the mean bias of the random intercepts. 
+Since some models estimated an intercept for each individual via the random effect,
+we take a look at how far off the estimated intercept is. 
+
+```{r}
+#| warning: false
+#| echo: false
+library(broom)
+# Function to fit models and extract coefficients
+mean_bias_re <- function(df, true_param) {
+  # gls using nlme package
+  gls <- gls(log_CD4 ~ Week, data = df, 
+             correlation = corCompSymm(form = ~ 1 | ID))
+  
+  # LME using nlme package
+  lme_nlme <- nlme::lme(log_CD4 ~ Week, random = ~1|ID, data = df)
+  # LME using lme4 package
+  lme_lme4 <- lme4::lmer(log_CD4 ~ Week + (1|ID), data = df)
+  # GEE using geepack package
+  gee_geepack <- geepack::geeglm(log_CD4 ~ Week, id = ID, data = df)
+  # generalized linear mixed model using glmmTMB package
+  glmm_glmmTMB <- glmmTMB::glmmTMB(log_CD4 ~ Week + (1|ID), data = df)
+  
+  coef_table <- tibble(
+    Model = c("GLS (nlme)", "LME (nlme)", "LME (lme4)", "GEE (geepack)", "GLMM (glmmTMB)"),
+    Mean_Bias_RE = c(NA,
+                      mean(unlist(random.effects(lme_nlme)) - true_param),
+                      mean(unlist(ranef(lme_lme4)$ID) - true_param),
+                               NA,
+                       mean(unlist(ranef(glmm_glmmTMB)$cond$ID$`(Intercept)`)-true_param))
+  )
+  
+  return(coef_table)
+}
+
+mean_bias_re_tidy <- lapply(df_list, mean_bias_re, 
+                         true_param = gls_summary$coefficients[[1]])
+
+# Combine tables into one
+combined_table <- dplyr::bind_rows(mean_bias_re_tidy)
+
+# Round numbers to 3 decimal places
+combined_table <- combined_table %>%
+  mutate_if(is.numeric, round, digits = 3)
+
+combined_table <- combined_table %>% 
+  mutate('Sample Size'=c("n=10", rep("",4), "n=50",rep("",4), "n=100",rep("",4)),.before = Model)
+
+####
+mean_bias_re_lme <- lapply(df_list, mean_bias_re, 
+                         true_param = lme_summary$coefficients[[1]])
+
+# Combine tables into one
+combined_table_lme <- dplyr::bind_rows(mean_bias_re_lme) %>%
+  mutate_if(is.numeric, round, digits = 3)
+
+combined_table$LME <- combined_table_lme$Mean_Bias_RE
+colnames(combined_table)[3] <- "GLS"
+knitr::kable(combined_table, caption = "Mean Bias of Random Intercepts")
+```
+
+It seems like the estimated intercepts for all methods are quite consistent. 
+It also seems like the LME-generated data was a better fit in terms of recovering
+a closer value of the intercept term, which is expected and good to see it reflecting
+in our simulation results. 
+
 ## Discussions and Conclusions
 
 Through this straigtforward simulation study, we have shown that on this dataset, the various packages were able to achieve the same fixed effect estimates. The differences lie in the estimation of the variance. For models that that estimate the random effect, part of the 'true variance' will be captured via the covariance matrix in the random effect. Furthermore, we noticed that functions from the `lme4` and `nlme` package seem to have a more similar sum of variance that is estimated than those of `geepack` and `glmmTMB`, perhaps due to the algorithm implemented in the packages to solve for the solution.
