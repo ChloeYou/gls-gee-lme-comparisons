@@ -79,8 +79,7 @@ Fit a GLS on the CD4 data and extract the coefficients to generate data with n =
 $$
 Y_{ij} = \beta_{0} + \beta_1 Time_{ij} + \epsilon_{ij}, 
 \boldsymbol{\epsilon} \sim N(0,\Sigma) 
-$$
-$$
+$$ $$
 \boldsymbol{\Sigma} = \sigma^2 (\rho \boldsymbol{J} + (1-\rho)\boldsymbol{I})
 $$
 
@@ -117,6 +116,7 @@ glmm_glmmTMB <- glmmTMB(log_CD4 ~ Week + (1|ID))
 
 ## Results: Simulation 1
 
+```{=tex}
 \begin{table}[ht]
   \centering
 
@@ -149,14 +149,12 @@ glmm_glmmTMB <- glmmTMB(log_CD4 ~ Week + (1|ID))
     \end{tabular}%
   }
 \end{table}
-
-
+```
 True parameters are $\sigma = 0.938, \beta_0 = 3.06, \beta_1= -0.008$.
-
-
 
 ## Results: Simulation 2
 
+```{=tex}
 \begin{table}[ht]
   \centering
 \caption{Parameter estimates on LME-generated data}
@@ -166,9 +164,7 @@ True parameters are $\sigma = 0.938, \beta_0 = 3.06, \beta_1= -0.008$.
       \toprule
       & Sample Size & Model & FE intercept & FE Week & RE sd & Error sd \\
       \midrule
-      
-
-& n=10 & GLS (nlme) & 3.19 & -0.07 &  & 0.63 \\
+          & n=10 & GLS (nlme) & 3.19 & -0.07 &  & 0.63 \\
               & & LME (nlme) & 3.19 & -0.07 & 0.41 & 0.48 \\
              & & LME (lme4) & 3.19 & -0.07 & 0.41 & 0.48 \\
             & & GEE (geepack) & 3.19 & -0.07 &  & 0.60 \\
@@ -187,11 +183,12 @@ True parameters are $\sigma = 0.938, \beta_0 = 3.06, \beta_1= -0.008$.
     \end{tabular}%
   }
 \end{table}
-
+```
 True parameters we're trying to estimate is $\beta_0= 3.063, \beta_1=-0.008, \tau = 0.7626, \sigma=0.547$
 
 ## Results: Variance from Simulation 1
 
+```{=tex}
 \begin{table}[ht]
   \centering
 \caption{Variance estimated from GLS-generated data}
@@ -199,10 +196,8 @@ True parameters we're trying to estimate is $\beta_0= 3.063, \beta_1=-0.008, \ta
   \resizebox{\textwidth}{!}{%
     \begin{tabular}{rllrrrr}
       \toprule
-      & Sample Size & Model & FE intercept & FE Week & RE sd & Error sd \\
+      & Sample Size & Model & Random Effect Variance & Error Term Variance & Sum \\
       \midrule
-Sample Size & Model & Random Effect & Error & Sum \\ 
-  \hline
  & n=10 & GLS (nlme) &  & 1.00 & 1.00 \\ 
  &  & LME (nlme) & 0.19 & 0.80 & 1.00 \\ 
  &  & LME (lme4) & 0.19 & 0.80 & 1.00 \\ 
@@ -222,9 +217,10 @@ Sample Size & Model & Random Effect & Error & Sum \\
     \end{tabular}%
   }
 \end{table}
-
+```
 ## Results: Variance from Simulation 2
 
+```{=tex}
 \begin{table}[ht]
   \centering
 \caption{Variance estimated from LME-generated data}
@@ -232,10 +228,8 @@ Sample Size & Model & Random Effect & Error & Sum \\
   \resizebox{\textwidth}{!}{%
     \begin{tabular}{rllrrrr}
       \toprule
-      & Sample Size & Model & FE intercept & FE Week & RE sd & Error sd \\
+      & Sample Size & Model & Random Effect Variance & Error Term Variance & Sum \\
       \midrule
-Sample Size & Model & Random Effect & Error & Sum \\ 
-  \hline
  & n=10 & GLS (nlme) &  & 0.40 & 0.40 \\   
  &  & LME (nlme) & 0.17 & 0.23 & 0.40 \\   
  &  & LME (lme4) & 0.17 & 0.23 & 0.40 \\  
@@ -255,7 +249,7 @@ Sample Size & Model & Random Effect & Error & Sum \\
     \end{tabular}%
   }
 \end{table}
-
+```
 ## Discussion
 
 -   Estimated fixed effect was consistent across the different methods, despite slight variations in the standard deviation of the random effects for the same sample size.
